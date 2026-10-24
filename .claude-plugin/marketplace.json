@@ -1,0 +1,15 @@
+{
+  "name": "sinol-package",
+  "description": "Skill for creating, reviewing and modernizing SIO2 (sinol) task packages and contests.",
+  "owner": {
+    "name": "Jakub Trela",
+    "url": "https://github.com/kubat1234"
+  },
+  "plugins": [
+    {
+      "name": "sinol-package",
+      "source": "./",
+      "description": "Create, review and modernize SIO2 (sinol) task packages and contests."
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+title: TODO
+sinol_task_id: __ID__
+sinol_contest_type: oi
+
+# Interactive task: prog/__ID__soc.cpp (the interactor) talks with the solution.
+# There are no .out files. The interactor reads the test from stdin and prints
+# the verdict in the checker format (OK/WRONG, comment, percent).
+# num_processes: 1   # how many copies of the solution the interactor talks to
+
+memory_limit: 524288  # KiB
+time_limit: 1000      # ms
+
+scores:
+  1: 30
+  2: 70
+
+subtask_dependencies:
+  2: [1]

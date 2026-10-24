@@ -1,0 +1,22 @@
+name: setup
+# First push of a repository made from the template: put the contest (from the
+# repository name, e.g. 09Grodek26) into _templates. Runs only while the templates
+# still say \konkurs{TODO}; fix diacritics later with `contest.py init`.
+on: push
+permissions:
+  contents: write
+jobs:
+  setup:
+    # not in the template repository itself (is_template is set only after its first push)
+    if: ${{ !github.event.repository.is_template && github.event.repository.name != 'contest-template' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - run: |
+          grep -q '\\konkurs{TODO}' _templates/*/doc/__ID__zad.tex || exit 0
+          name="${GITHUB_REPOSITORY#*/}"
+          python3 tools/contest.py init --id "$(echo "$name" | tr A-Z a-z)" --name "$name"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "*: init contest $name"
+          git push

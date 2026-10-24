@@ -1,0 +1,13 @@
+{
+  "extraKnownMarketplaces": {
+    "sinol-package": {
+      "source": {
+        "source": "github",
+        "repo": "kubat1234/sinol-package-skill"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "sinol-package@sinol-package": true
+  }
+}

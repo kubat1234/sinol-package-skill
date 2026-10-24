@@ -1,0 +1,17 @@
+title: TODO
+sinol_task_id: __ID__
+sinol_contest_type: oi
+
+# prog/__ID__chk.cpp checks the answers (no exact comparison with out/).
+memory_limit: 524288  # KiB
+time_limit: 1000      # ms
+# time_limits:
+#   2: 2000
+
+scores:
+  1: 30
+  2: 70
+
+# Group 2 is scored as if it also contained the tests of group 1.
+subtask_dependencies:
+  2: [1]

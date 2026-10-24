@@ -1,0 +1,32 @@
+name: release
+# Builds changed packages and updates the `tasks` release (see .github/release.py).
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: release
+  cancel-in-progress: false
+jobs:
+  release:
+    # not in the template repository itself (is_template is set only after its first push)
+    if: ${{ !github.event.repository.is_template && github.event.repository.name != 'contest-template' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0   # the diff against the last release needs history
+
+      - name: Install LaTeX and sinol-make
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -yq --no-install-recommends texlive-latex-base texlive-latex-recommended \
+            texlive-lang-polish texlive-fonts-recommended texlive-plain-generic lmodern
+          pipx install sinol-make
+
+      - name: Build and publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 .github/release.py

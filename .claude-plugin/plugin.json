@@ -1,0 +1,20 @@
+{
+  "name": "sinol-package",
+  "version": "0.2.0",
+  "description": "Create, review and modernize SIO2 (sinol) task packages and whole contests with sinol-make: standard, checker, library and interactive tasks.",
+  "author": {
+    "name": "Jakub Trela",
+    "url": "https://github.com/kubat1234"
+  },
+  "keywords": [
+    "sio2",
+    "oioioi",
+    "sinol",
+    "sinol-make",
+    "competitive-programming",
+    "olympiad"
+  ],
+  "homepage": "https://github.com/kubat1234/sinol-package-skill",
+  "repository": "https://github.com/kubat1234/sinol-package-skill",
+  "license": "MIT"
+}

@@ -1,0 +1,22 @@
+title: TODO
+sinol_task_id: __ID__
+sinol_contest_type: oi
+
+# Solutions are compiled together with the library: they implement maks_suma()
+# and call dlugosc() / element() from __ID__lib.h; main() is in __ID__lib.cpp.
+extra_compilation_files: ['__ID__lib.cpp', '__ID__lib.h']
+extra_compilation_args:
+  cpp: ['__ID__lib.cpp']
+
+memory_limit: 524288  # KiB
+time_limit: 1000      # ms
+# time_limits:
+#   2: 2000
+
+scores:
+  1: 30
+  2: 70
+
+# Group 2 is scored as if it also contained the tests of group 1.
+subtask_dependencies:
+  2: [1]
