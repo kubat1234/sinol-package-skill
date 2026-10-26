@@ -1,4 +1,4 @@
-// Library interface given to contestants (attach it to the statement).
+// Library interface (contestants get the same file in dlazaw/).
 #pragma once
 
 // Provided by the library:

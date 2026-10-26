@@ -4,6 +4,8 @@ sinol_contest_type: oi
 
 # Solutions are compiled together with the library: they implement maks_suma()
 # and call dlugosc() / element() from __ID__lib.h; main() is in __ID__lib.cpp.
+# Contestants get dlazaw/ (the same __ID__lib.h, a sample library, a sample wrong
+# solution; tests in dlazaw/tests/) as dlazaw.zip, instead of __ID__ocen.zip.
 extra_compilation_files: ['__ID__lib.cpp', '__ID__lib.h']
 extra_compilation_args:
   cpp: ['__ID__lib.cpp']

@@ -17,7 +17,7 @@ Run inside the package directory:
 | `sinol-make verify` | everything: config, gen (with sanitizers), doc, inwer, run |
 | `sinol-make chkwer` | run the checker on the model outputs (not for interactive) |
 | `sinol-make doc` | build all `doc/*.tex` |
-| `sinol-make export` | `<id>.tgz` for sio2 (+ `attachments/<id>ocen.zip`) |
+| `sinol-make export --export-ocen` | `<id>.tgz` for sio2 with `attachments/<id>ocen.zip` (or `dlazaw.zip`, see package-format.md); prefer `contest.py export-all <id>` |
 | `sinol-make init <id> -t _templates <type>` | new package from the contest's templates (only `__ID__` is replaced) |
 
 `run` / `verify` measure with sio2jail by default. sio2jail needs perf

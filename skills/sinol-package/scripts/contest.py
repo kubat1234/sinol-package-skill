@@ -3,7 +3,7 @@
 
     python3 tools/contest.py init --id 10grodek27 --name "10Gródek27"   # once per contest repo
     python3 tools/contest.py lint [-v] [abc ...]        # static checks, nothing is compiled
-    python3 tools/contest.py export-all [abc ...]       # sinol-make export -> _export/
+    python3 tools/contest.py export-all [abc ...]       # sinol-make export --export-ocen -> _export/
     python3 tools/contest.py update gen|tools|templates|all [abc ...|all]   # newer gen.h / tools / templates
 
 Everything else is sinol-make itself: `sinol-make init abc -t _templates std`
@@ -306,7 +306,7 @@ def lint_package(pkg):
 
     # --- leftovers
     template_left = []
-    for p in sorted(list(prog.glob("*")) + list((pkg / "doc").glob("*.tex"))):
+    for p in sorted(list(prog.glob("*")) + list((pkg / "doc").glob("*.tex")) + list((pkg / "dlazaw").rglob("*"))):
         if not p.is_file() or p.suffix not in (".cpp", ".c", ".h", ".hpp", ".py", ".tex"):
             continue
         if p.name in ("oi.h", "gen.h", "testgen.hpp"):
@@ -425,10 +425,28 @@ def check_sinol_make_version(targets):
                           f"upgrade: pipx upgrade sinol-make  (or pip install --user -U sinol-make)"))
 
 
-def run_sinol_make(pkg, sm_args):
-    cmd = ["sinol-make"] + sm_args
-    print(color("1", f"[{pkg.name}] {' '.join(cmd)}"), flush=True)
-    return subprocess.run(cmd, cwd=pkg).returncode
+def export_package(pkg, extra=(), log=None, timeout=None):
+    """`sinol-make export --export-ocen` in pkg; returns the exit code (also used by .github/release.py).
+
+    The archive gets attachments/<id>ocen.zip (the 0* and *ocen tests), or attachments/dlazaw.zip
+    instead if the package has a dlazaw/ directory (files for contestants, see README.md).
+    The statement includes in/<id>0*.in, so in a fresh clone the tests are generated first."""
+    def sm(*cmd):
+        print(color("1", f"[{pkg.name}] sinol-make {' '.join(cmd)}"), file=log or sys.stdout, flush=True)
+        return subprocess.run(["sinol-make", *cmd], cwd=pkg, stdin=subprocess.DEVNULL, stdout=log,
+                              stderr=subprocess.STDOUT if log else None, timeout=timeout).returncode
+
+    if "--no-statement" not in extra and not list(pkg.glob(f"in/{pkg.name}0*.in")):
+        rc = sm("gen")
+        if rc != 0:
+            return rc
+    return sm("export", "--export-ocen", *extra)
+
+
+def attachments(pkg):
+    """(file in the last export, name to publish it under): ocen tests, dlazaw"""
+    a = pkg / ".cache" / "export" / pkg.name / "attachments"
+    return [(a / f"{pkg.name}ocen.zip", f"{pkg.name}_ocen.zip"), (a / "dlazaw.zip", f"{pkg.name}_dlazaw.zip")]
 
 
 def cmd_export_all(args):
@@ -437,11 +455,14 @@ def cmd_export_all(args):
     failed = []
     for pkg in packages(args.ids):
         extra = ["--no-statement"] if args.no_statement else []
-        if run_sinol_make(pkg, ["export"] + extra) != 0:
+        if export_package(pkg, extra) != 0:
             failed.append(pkg.name)
             continue
         for f in list(pkg.glob(f"{pkg.name}*.tgz")) + list(pkg.glob(f"{pkg.name}*.zip")):
             shutil.move(str(f), out_dir / f.name)
+        for src, name in attachments(pkg):
+            if src.exists():
+                shutil.copyfile(src, out_dir / name)
     print(f"archives in {out_dir.relative_to(ROOT)}/")
     if failed:
         print(color("31", "failed: " + " ".join(failed)))
@@ -616,7 +637,7 @@ def main():
     p.add_argument("-v", "--verbose", action="store_true", help="also show info messages")
     p.set_defaults(func=cmd_lint)
 
-    p = sub.add_parser("export-all", help="sinol-make export for packages, archives to _export/")
+    p = sub.add_parser("export-all", help="sinol-make export --export-ocen for packages, archives to _export/")
     p.add_argument("ids", nargs="*")
     p.add_argument("--no-statement", action="store_true")
     p.set_defaults(func=cmd_export_all)

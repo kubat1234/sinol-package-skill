@@ -50,8 +50,11 @@ includes `abclib.h`. Solutions implement the functions declared in the header.
   clash with contestants' globals.
 - Rule violations (bad arguments, too many calls): print a message that cannot
   match the expected output and `exit(0)` → WA.
-- Give contestants `abclib.h` (and ideally a sample library that reads the
-  input in a simple way) — attach to the statement.
+- Give contestants, in `dlazaw/` (in the template): `abclib.h` (the same as
+  `prog/abclib.h`), a sample library that reads the input simply and checks
+  no rules, and a sample wrong solution that shows how to use it. Describe
+  them in the statement's "Komunikacja" section, with the compile command.
+  See package-format.md, dlazaw.
 - Memory/time of the library count to the solution: keep it light, mention it
   in limits.
 
@@ -83,3 +86,7 @@ Rules:
 - `num_processes: k` in config for k solution copies.
 - sinol-make has no `chkwer` for interactive tasks.
 - Statement: no `\makecompactexample`; show an example dialogue in a table.
+- Give contestants a sample interactor in `dlazaw/` (in the template): it
+  talks through stdin/stdout, takes the hidden data from argv or a file,
+  checks little; the statement says how to run it (`mkfifo`). See
+  package-format.md, dlazaw.

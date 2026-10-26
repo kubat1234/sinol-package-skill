@@ -17,7 +17,7 @@ tools/contest.py                init, lint, export-all, update
 |---|---|
 | `init --id 10grodek27 --name "10Gródek27"` | contest into `_templates/*/doc/__ID__zad.tex`, enables the commit hook; once per clone (the hook) |
 | `lint [-v] [ids]` | static checks: config, names, groups vs scores, statement vs config (`\id`, `\RAM`, subtask table, time limits), leftover `TEMPLATE:` / `TODO`, shared files, gen.h version |
-| `export-all [ids]` | `sinol-make export` everywhere, archives in `_export/` |
+| `export-all [ids]` | `sinol-make export --export-ocen` everywhere (`sinol-make gen` first if the examples are missing), archives and `<id>_ocen.zip` / `<id>_dlazaw.zip` in `_export/` |
 | `update gen [ids\|all]` | newest gen.h (sinol-gen) into `_templates/` and the given packages — a package is updated only if its tests stay byte-identical (`--force` otherwise) |
 | `update tools` | `tools/`, `.github/`, `.githooks/` from contest-template |
 | `update templates [ids\|all]` | `_templates/` from contest-template, keeping the contest name; shared files (oi.h, sinol.cls, …) of the given packages |
@@ -40,7 +40,7 @@ tools/contest.py                init, lint, export-all, update
 
 Every push to main builds the changed packages (`.github/release.py`) and
 updates the GitHub release `tasks`: a table of all tasks with the statement
-PDF, the sio2 package, the ocen tests and the build log. The state column
+PDF, the sio2 package, the ocen tests (or `dlazaw.zip`) and the build log. The state column
 (❌ work in progress, ⌛ to be verified, ✅ done) is set by editing the table or
 by `!todo` / `!ver` / `!done` in a commit title; `!rebuild-<id>` /
 `!rebuild-*` forces a rebuild. Mention the markers when you suggest a commit

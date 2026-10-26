@@ -2,10 +2,12 @@
 """Build changed packages and publish them in the `tasks` GitHub release.
 
 Run by .github/workflows/release.yml on every push. For each package changed
-since the last release it runs `sinol-make export --export-ocen` and uploads
+since the last release it runs `sinol-make export --export-ocen` (through
+tools/contest.py) and uploads
 
     abc.pdf  statement        abc.tgz  package for sio2
-    abc_ocen.zip  ocen tests  abc.log  build log
+    abc_ocen.zip  ocen tests  abc_dlazaw.zip  abc/dlazaw/ (instead of abc_ocen.zip)
+    abc.log  build log
 
 The release notes hold a table of all packages. The state column is kept
 between runs (edit it by hand, or put !todo / !ver / !done in a commit title,
@@ -24,6 +26,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT / "tools"))
+from contest import attachments, export_package  # noqa: E402
 BUILD = ROOT / "_build"
 TAG = "tasks"
 ID_RE = re.compile(r"^[a-z]{3}$")
@@ -106,14 +110,11 @@ def build(pkg):
         f.unlink()
     try:
         with open(log, "w") as out:
-            r = subprocess.run(["sinol-make", "export", "--export-ocen"], cwd=d, stdout=out,
-                               stderr=subprocess.STDOUT, timeout=TIMEOUT)
-        ok, msg = r.returncode == 0, "OK" if r.returncode == 0 else "failed"
+            rc = export_package(d, log=out, timeout=TIMEOUT)
+        ok, msg = rc == 0, "OK" if rc == 0 else "failed"
     except subprocess.TimeoutExpired:
         ok, msg = False, f"timeout ({TIMEOUT} s)"
-    for src, dst in ((d / f"{pkg}.tgz", f"{pkg}.tgz"),
-                     (d / "doc" / f"{pkg}zad.pdf", f"{pkg}.pdf"),
-                     (d / ".cache" / "export" / pkg / "attachments" / f"{pkg}ocen.zip", f"{pkg}_ocen.zip")):
+    for src, dst in [(d / f"{pkg}.tgz", f"{pkg}.tgz"), (d / "doc" / f"{pkg}zad.pdf", f"{pkg}.pdf")] + attachments(d):
         if src.exists():
             shutil.copyfile(src, BUILD / dst)
     print(f"{pkg}: {msg}", flush=True)
@@ -166,7 +167,7 @@ def main():
                 failed.append(pkg)
             files = [f"[{label}]({url}/{name})" for label, name in
                      (("statement", f"{pkg}.pdf"), ("package", f"{pkg}.tgz"),
-                      ("ocen", f"{pkg}_ocen.zip"), ("log", f"{pkg}.log"))
+                      ("ocen", f"{pkg}_ocen.zip"), ("dlazaw", f"{pkg}_dlazaw.zip"), ("log", f"{pkg}.log"))
                      if (BUILD / name).exists()]
             files_cell = " · ".join(files)
             status = f"{'✅' if ok else '❌'} {msg} ({head[:8]})"

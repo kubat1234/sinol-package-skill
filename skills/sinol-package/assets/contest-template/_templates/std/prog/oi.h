@@ -362,7 +362,8 @@ Reader::Reader(FILE* _input) {
 }
 
 Reader::~Reader() {
-  assert(fclose(input) == 0);
+  // sio2jail forbids closing stdin (close(0) gives RV).
+  if (input != stdin) assert(fclose(input) == 0);
 }
 
 void Reader::fillBuffer() {

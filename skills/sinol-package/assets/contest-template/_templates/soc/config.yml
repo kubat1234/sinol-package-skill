@@ -6,6 +6,8 @@ sinol_contest_type: oi
 # There are no .out files. The interactor reads the test from stdin and prints
 # the verdict in the checker format (OK/WRONG, comment, percent).
 # num_processes: 1   # how many copies of the solution the interactor talks to
+# Contestants get dlazaw/ (a sample interactor; tests in dlazaw/tests/) as
+# dlazaw.zip, instead of __ID__ocen.zip.
 
 memory_limit: 524288  # KiB
 time_limit: 1000      # ms

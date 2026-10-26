@@ -44,7 +44,7 @@ In the repository root:
 
 ```sh
 python3 tools/contest.py lint                 # statement vs config, TODOs, old gen.h, ...
-python3 tools/contest.py export-all           # archives in _export/
+python3 tools/contest.py export-all           # export --export-ocen, archives in _export/
 python3 tools/contest.py update gen [abc|all] # newer gen.h into _templates (+ packages, only if their tests stay the same)
 python3 tools/contest.py update tools         # tools/, .github/, .githooks/ from contest-template
 python3 tools/contest.py update templates     # _templates/ from contest-template (keeps the contest name)
@@ -53,7 +53,7 @@ python3 tools/contest.py update templates     # _templates/ from contest-templat
 WSL: add `-T time` to `run` / `verify` (no sio2jail).
 
 **Release**: every push updates the [`tasks` release](../../releases/tasks)
-(statement, package, ocen tests per task). State: `!todo` / `!ver` / `!done`
+(statement, package, ocen tests or dlazaw.zip per task). State: `!todo` / `!ver` / `!done`
 in a commit title; `!rebuild-abc` / `!rebuild-*`.
 
 ## config.yml
@@ -71,8 +71,16 @@ in a commit title; `!rebuild-abc` / `!rebuild-*`.
   - `abc0.in` the example from the statement (`abc0a.in`, `abc0b.in` … if there are more): `g.example(...)`.
   - `abc1ocen.in`, `abc2ocen.in` … public tests, contestants get them right away: `g.ocen(...)`.
   - `abc1a.in`, `abc1b.in`, `abc2a.in` … groups: `g.group(k)`, `g.test(...)`.
+  - Contestants get `abcocen.zip` (`0*` and `*ocen` tests) as an attachment.
   - None is committed; a package without an ingen commits all its tests
     (`!*.in` in `abc/in/.gitignore`, `!*.out` in `abc/out/.gitignore`).
+- `abc/dlazaw/` (optional): files contestants need, committed. A library
+  task: `abclib.h`, a sample library and a sample wrong solution (in the `lib`
+  template); an interactive task: a sample interactor (in the `soc` template).
+  Files go straight into `dlazaw/`; more than one test goes into
+  `dlazaw/tests/`. With `dlazaw/` the attachment is `dlazaw.zip` **instead of**
+  `abcocen.zip`, so put the tests contestants should get there by hand (they
+  are often not the package tests, e.g. without the library's input guard).
 - Commits: `abc: summary` / `*: summary`, ≤ 50 chars.
 
 ## Credits

@@ -28,6 +28,7 @@ Use when finishing a package and when reviewing one.
 - [ ] Never crashes; malformed output = WRONG; partial points as intended (task-types.md).
 - [ ] Interactor: flushes, SIGPIPE ignored, query limit, validates queries, not exploitable.
 - [ ] Library hides the input (`fclose(stdin)`), state not clashing with contestants.
+- [ ] `dlazaw/` (library / interactive task): the header equals `prog/abclib.h`, the sample library / interactor compiles and works with the model, the statement says how to use it; tests in `dlazaw/tests/` if more than one.
 
 ## Package hygiene
 - [ ] `contest.py lint <id>`: no errors; no `TEMPLATE:`/`TODO` left (except the story if the user writes it).
