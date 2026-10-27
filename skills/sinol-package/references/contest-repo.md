@@ -19,8 +19,8 @@ tools/contest.py                init, lint, export-all, update
 | `lint [-v] [ids]` | static checks: config, names, groups vs scores, statement vs config (`\id`, `\RAM`, subtask table, time limits), leftover `TEMPLATE:` / `TODO`, shared files, gen.h version |
 | `export-all [ids]` | `sinol-make export --export-ocen` everywhere (`sinol-make gen` first if the examples are missing), archives and `<id>_ocen.zip` / `<id>_dlazaw.zip` in `_export/` |
 | `update gen [ids\|all]` | newest gen.h (sinol-gen) into `_templates/` and the given packages — a package is updated only if its tests stay byte-identical (`--force` otherwise) |
-| `update tools` | `tools/`, `.github/`, `.githooks/` from contest-template |
-| `update templates [ids\|all]` | `_templates/` from contest-template, keeping the contest name; shared files (oi.h, sinol.cls, …) of the given packages |
+| `update tools` | `tools/`, `.github/`, `.githooks/`, `.claude/`, `.gitignore` and `README.md` (keeping its title) from contest-template |
+| `update templates [ids\|all]` | `_templates/` from contest-template, keeping the contest name and removing files it no longer has; shared files (oi.h, sinol.cls, …) of the given packages |
 | `update all` | tools + templates + gen, no packages |
 
 `update` takes the latest tag; `--ref`, `--gen-from DIR`, `--template-from DIR`,

@@ -46,7 +46,7 @@ In the repository root:
 python3 tools/contest.py lint                 # statement vs config, TODOs, old gen.h, ...
 python3 tools/contest.py export-all           # export --export-ocen, archives in _export/
 python3 tools/contest.py update gen [abc|all] # newer gen.h into _templates (+ packages, only if their tests stay the same)
-python3 tools/contest.py update tools         # tools/, .github/, .githooks/ from contest-template
+python3 tools/contest.py update tools         # tools/, .github/, .githooks/, .claude/, .gitignore, README.md
 python3 tools/contest.py update templates     # _templates/ from contest-template (keeps the contest name)
 ```
 

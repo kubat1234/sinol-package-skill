@@ -31,7 +31,7 @@ except ImportError:  # sinol-make depends on PyYAML, so it is normally present; 
 
 HERE = Path(__file__).resolve().parent.parent
 GEN_REPO = "kubat1234/sinol-gen"                # gen.h
-TEMPLATE_REPO = "kubat1234/contest-template"    # tools/, .github/, .githooks/, _templates/
+TEMPLATE_REPO = "kubat1234/contest-template"    # tools/, .github/, ..., README.md, _templates/
 ROOT = HERE  # contest root; --root overrides
 
 
@@ -573,17 +573,47 @@ def update_gen(src, ids, dry, force):
                                      f"{', ' + problem if problem else ', tests unchanged'})")
 
 
+TOOL_DIRS = ("tools", ".github", ".githooks", ".claude")
+TOOL_FILES = (".gitignore",)
+
+
 def update_tools(src, dry):
     print("tools:")
-    for top in ("tools", ".github", ".githooks"):
+    for top in TOOL_DIRS:
         for f in sorted((src / top).rglob("*")) if (src / top).is_dir() else []:
             if f.is_file():
                 copy_if_changed(f, ROOT / f.relative_to(src), dry)
+    for name in TOOL_FILES:
+        if (src / name).is_file():
+            copy_if_changed(src / name, ROOT / name, dry)
+    update_readme(src, dry)
+
+
+def update_readme(src, dry):
+    """README.md from contest-template, keeping this contest's title (the first `# ` line)."""
+    new, dst = src / "README.md", ROOT / "README.md"
+    if not new.is_file():
+        return
+    text = new.read_text(encoding="utf-8")
+    old = dst.read_text(encoding="utf-8") if dst.exists() else ""
+    title = re.search(r"^# .*$", old, flags=re.M)
+    if title:
+        text = re.sub(r"^# .*$", lambda _: title.group(0), text, count=1, flags=re.M)
+    if text != old:
+        print(f"  {'would update' if dry else 'updated'} README.md (title kept)")
+        if not dry:
+            dst.write_text(text, encoding="utf-8")
 
 
 def update_templates(src, ids, dry):
     print("templates:")
     name = contest_name()
+    for f in sorted((ROOT / "_templates").rglob("*")):  # files removed from contest-template
+        rel = f.relative_to(ROOT)
+        if f.is_file() and f.name != "gen.h" and not (src / rel).exists():
+            print(f"  {'would remove' if dry else 'removed'} {rel}")
+            if not dry:
+                f.unlink()
     for f in sorted((src / "_templates").rglob("*")):
         rel = f.relative_to(src)
         if f.is_file() and f.name != "gen.h" and not rel.parts[-1].endswith("zad.tex"):  # gen.h: `update gen`
@@ -644,8 +674,10 @@ def main():
 
     p = sub.add_parser("update", help="newer gen.h (sinol-gen), tools or _templates (contest-template) from GitHub",
                        description="gen: gen.h into _templates/*/prog and the given packages (only if their tests "
-                                   "stay identical, unless --force). tools: tools/, .github/, .githooks/. templates: "
-                                   "_templates/ (keeps the contest name; gen.h only via `gen`) and the shared files "
+                                   "stay identical, unless --force). tools: tools/, .github/, .githooks/, .claude/, .gitignore, "
+                                   "README.md (keeps the title). templates: "
+                                   "_templates/ (keeps the contest name, removes what contest-template no longer has; "
+                                   "gen.h only via `gen`) and the shared files "
                                    "(oi.h, sinol.cls, ...) of the given packages. all: tools + templates + gen, "
                                    "no packages. Default version: the latest tag.")
     p.add_argument("what", choices=["gen", "tools", "templates", "all"])
