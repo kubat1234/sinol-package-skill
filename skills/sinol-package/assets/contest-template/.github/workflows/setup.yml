@@ -15,7 +15,7 @@ jobs:
       - run: |
           grep -q '\\konkurs{TODO}' _templates/*/doc/__ID__zad.tex || exit 0
           name="${GITHUB_REPOSITORY#*/}"
-          python3 tools/contest.py init --id "$(echo "$name" | tr A-Z a-z)" --name "$name"
+          python3 contest.py init --id "$(echo "$name" | tr A-Z a-z)" --name "$name"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -am "*: init contest $name"

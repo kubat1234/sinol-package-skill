@@ -1,7 +1,7 @@
 #!/bin/sh
 # Refresh what the skill bundles:
 #   skills/sinol-package/assets/contest-template/   contest-template (packages in foreign repos, new contests)
-#   skills/sinol-package/scripts/contest.py         its tools/contest.py
+#   skills/sinol-package/scripts/contest.py         its contest.py
 #   skills/sinol-package/references/sinol-gen/      sinol-gen docs + examples (the gen.h API)
 #   skills/sinol-package/assets/VERSIONS            what was bundled
 # Usage: bin/sync-assets.sh [path/to/contest-template] [path/to/sinol-gen]   (default: ../contest-template ../sinol-gen)
@@ -10,7 +10,7 @@ BIN=$(dirname "$0")
 SRC="${1:-$BIN/../../contest-template}"
 GEN="${2:-$BIN/../../sinol-gen}"
 SKILL="$BIN/../skills/sinol-package"
-[ -f "$SRC/tools/contest.py" ] || { echo "not a contest-template: $SRC" >&2; exit 1; }
+[ -f "$SRC/contest.py" ] || { echo "not a contest-template: $SRC" >&2; exit 1; }
 [ -f "$GEN/gen.h" ] || { echo "not a sinol-gen checkout: $GEN" >&2; exit 1; }
 
 DST="$SKILL/assets/contest-template"
@@ -23,7 +23,7 @@ while IFS= read -r f; do
 	mkdir -p "$DST/$(dirname "$f")"
 	cp -p "$SRC/$f" "$DST/$f"
 done
-cp "$SRC/tools/contest.py" "$SKILL/scripts/contest.py"
+cp "$SRC/contest.py" "$SKILL/scripts/contest.py"
 
 R="$SKILL/references/sinol-gen"
 rm -rf "$R"

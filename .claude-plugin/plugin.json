@@ -1,6 +1,6 @@
 {
   "name": "sinol-package",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "Create, review and modernize SIO2 (sinol) task packages and whole contests with sinol-make: standard, checker, library and interactive tasks.",
   "author": {
     "name": "Jakub Trela",

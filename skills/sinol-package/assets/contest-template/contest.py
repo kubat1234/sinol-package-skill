@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Contest repository tool: what sinol-make does not do.
 
-    python3 tools/contest.py init --id 10grodek27 --name "10Gródek27"   # once per contest repo
-    python3 tools/contest.py lint [-v] [abc ...]        # static checks, nothing is compiled
-    python3 tools/contest.py export-all [abc ...]       # sinol-make export --export-ocen -> _export/
-    python3 tools/contest.py update gen|tools|templates|all [abc ...|all]   # newer gen.h / tools / templates
+    python3 contest.py init --id 10grodek27 --name "10Gródek27"   # once per contest repo
+    python3 contest.py lint [-v] [abc ...]        # static checks, nothing is compiled
+    python3 contest.py export-all [abc ...]       # sinol-make export --export-ocen -> _export/
+    python3 contest.py update gen|tools|templates|all [abc ...|all]   # newer gen.h / tools / templates
+    python3 contest.py logo logo.png [abc ...]    # new logo in _templates and the packages
 
 Everything else is sinol-make itself: `sinol-make init abc -t _templates std`
 creates a package, `gen`, `inwer`, `run`, `verify`, `doc`, `export` work on it.
@@ -29,15 +30,15 @@ try:
 except ImportError:  # sinol-make depends on PyYAML, so it is normally present; `init` works without it
     yaml = None
 
-HERE = Path(__file__).resolve().parent.parent
+HERE = Path(__file__).resolve().parent
 GEN_REPO = "kubat1234/sinol-gen"                # gen.h
-TEMPLATE_REPO = "kubat1234/contest-template"    # tools/, .github/, ..., README.md, _templates/
+TEMPLATE_REPO = "kubat1234/contest-template"    # contest.py, .github/, ..., README.md, _templates/
 ROOT = HERE  # contest root; --root overrides
 
 
 def find_templates(root):
     """The contest's own _templates/, else the copy bundled with the sinol-package skill."""
-    for t in (root / "_templates", HERE / "_templates", HERE / "assets" / "contest-template" / "_templates"):
+    for t in (root / "_templates", HERE / "_templates", HERE.parent / "assets" / "contest-template" / "_templates"):
         if (t / "std").is_dir():
             return t
     return root / "_templates"
@@ -573,8 +574,8 @@ def update_gen(src, ids, dry, force):
                                      f"{', ' + problem if problem else ', tests unchanged'})")
 
 
-TOOL_DIRS = ("tools", ".github", ".githooks", ".claude")
-TOOL_FILES = (".gitignore",)
+TOOL_DIRS = (".github", ".githooks", ".claude")
+TOOL_FILES = ("contest.py", ".gitignore")
 
 
 def update_tools(src, dry):
@@ -586,6 +587,13 @@ def update_tools(src, dry):
     for name in TOOL_FILES:
         if (src / name).is_file():
             copy_if_changed(src / name, ROOT / name, dry)
+    old = ROOT / "tools" / "contest.py"  # contest.py was in tools/ up to v1.0.3
+    if old.exists() and (src / "contest.py").exists():
+        print(f"  {'would remove' if dry else 'removed'} tools/contest.py (now ./contest.py)")
+        if not dry:
+            old.unlink()
+            if not any((ROOT / "tools").iterdir()):
+                (ROOT / "tools").rmdir()
     update_readme(src, dry)
 
 
@@ -616,7 +624,8 @@ def update_templates(src, ids, dry):
                 f.unlink()
     for f in sorted((src / "_templates").rglob("*")):
         rel = f.relative_to(src)
-        if f.is_file() and f.name != "gen.h" and not rel.parts[-1].endswith("zad.tex"):  # gen.h: `update gen`
+        # gen.h: `update gen`; logo.png belongs to the contest: `logo`
+        if f.is_file() and f.name not in ("gen.h", "logo.png") and not rel.parts[-1].endswith("zad.tex"):
             copy_if_changed(f, ROOT / rel, dry)
     for f in sorted((src / "_templates").glob("*/doc/__ID__zad.tex")):
         dst = ROOT / f.relative_to(src)
@@ -630,7 +639,8 @@ def update_templates(src, ids, dry):
                 dst.write_text(text, encoding="utf-8")
     for pkg in selected(ids):  # shared files of packages
         for rel in SHARED:
-            if rel != "prog/gen.h" and (src / "_templates" / "std" / rel).exists() and (pkg / rel).exists():
+            if rel not in ("prog/gen.h", "doc/logo.png") and (src / "_templates" / "std" / rel).exists() \
+                    and (pkg / rel).exists():
                 copy_if_changed(src / "_templates" / "std" / rel, pkg / rel, dry)
 
 
@@ -647,6 +657,20 @@ def cmd_update(args):
         src, desc = fetch(GEN_REPO, args.ref if what == "gen" else None, args.gen_from)
         print(f"from {desc}")
         update_gen(src, args.ids if what == "gen" else [], args.dry_run, args.force)
+    if args.dry_run:
+        print("(dry run - nothing was changed)")
+
+
+# --------------------------------------------------------------------------- logo
+
+def cmd_logo(args):
+    """The contest logo (doc/logo.png, the top of every statement) into _templates and the packages."""
+    src = Path(args.file).resolve()
+    if not src.is_file() or src.read_bytes()[:8] != b"\x89PNG\r\n\x1a\n":
+        sys.exit(f"{args.file}: not a PNG file")
+    for f in sorted((ROOT / "_templates").glob("*/doc")) + [pkg / "doc" for pkg in packages(args.ids)]:
+        if f.is_dir():
+            copy_if_changed(src, f / "logo.png", args.dry_run)
     if args.dry_run:
         print("(dry run - nothing was changed)")
 
@@ -674,9 +698,9 @@ def main():
 
     p = sub.add_parser("update", help="newer gen.h (sinol-gen), tools or _templates (contest-template) from GitHub",
                        description="gen: gen.h into _templates/*/prog and the given packages (only if their tests "
-                                   "stay identical, unless --force). tools: tools/, .github/, .githooks/, .claude/, .gitignore, "
+                                   "stay identical, unless --force). tools: contest.py, .github/, .githooks/, .claude/, .gitignore, "
                                    "README.md (keeps the title). templates: "
-                                   "_templates/ (keeps the contest name, removes what contest-template no longer has; "
+                                   "_templates/ (keeps the contest name and logo, removes what contest-template no longer has; "
                                    "gen.h only via `gen`) and the shared files "
                                    "(oi.h, sinol.cls, ...) of the given packages. all: tools + templates + gen, "
                                    "no packages. Default version: the latest tag.")
@@ -688,6 +712,12 @@ def main():
     p.add_argument("--dry-run", action="store_true", help="only show what would change")
     p.add_argument("--force", action="store_true", help="update gen.h of packages even if their tests would change")
     p.set_defaults(func=cmd_update)
+
+    p = sub.add_parser("logo", help="new contest logo (PNG) in _templates and the packages")
+    p.add_argument("file", help="PNG file, e.g. 450x225 (shown 2 cm high)")
+    p.add_argument("ids", nargs="*", help="packages (default: all)")
+    p.add_argument("--dry-run", action="store_true", help="only show what would change")
+    p.set_defaults(func=cmd_logo)
 
     ap.add_argument("--root", help="contest root (default: the repository containing this script)")
     args = ap.parse_args()

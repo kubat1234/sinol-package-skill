@@ -11,7 +11,7 @@ cp -r <pkg> <scratchpad>/review/<id> && cd <scratchpad>/review/<id>
 
 ## 1. Static pass
 
-- `python3 <contest>/tools/contest.py lint <pkg> -v` (or `scripts/contest.py lint <path> -v`
+- `python3 <contest>/contest.py lint <pkg> -v` (or `scripts/contest.py lint <path> -v`
   from the skill for a foreign repo).
 - Read `config.yml`, the statement, `prog/` listing. Identify the type and
   whether the package is old-style (Makefile/makefile.in — then also suggest

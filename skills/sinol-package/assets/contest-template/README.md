@@ -11,7 +11,7 @@ statement templates (`\konkurs`, `\signature`). Then clone and:
 ```sh
 pip install --user sinol-make        # >= 1.9.15
 # pipx install sinol-make
-python3 tools/contest.py init --id <contest-id> --name "<Contest Name>"   # commit hook + name with diacritics
+python3 contest.py init --id <contest-id> --name "<Contest Name>"   # commit hook + name with diacritics
 ```
 
 ## New package
@@ -43,11 +43,12 @@ sinol-make export    # package archive for SIO2
 In the repository root:
 
 ```sh
-python3 tools/contest.py lint                 # statement vs config, TODOs, old gen.h, ...
-python3 tools/contest.py export-all           # export --export-ocen, archives in _export/
-python3 tools/contest.py update gen [abc|all] # newer gen.h into _templates (+ packages, only if their tests stay the same)
-python3 tools/contest.py update tools         # tools/, .github/, .githooks/, .claude/, .gitignore, README.md
-python3 tools/contest.py update templates     # _templates/ from contest-template (keeps the contest name)
+python3 contest.py lint                 # statement vs config, TODOs, old gen.h, ...
+python3 contest.py export-all           # export --export-ocen, archives in _export/
+python3 contest.py update gen [abc|all] # newer gen.h into _templates (+ packages, only if their tests stay the same)
+python3 contest.py update tools         # contest.py, .github/, .githooks/, .claude/, .gitignore, README.md
+python3 contest.py update templates     # _templates/ from contest-template (keeps the contest name and logo)
+python3 contest.py logo logo.png        # new logo in _templates and all packages
 ```
 
 WSL: add `-T time` to `run` / `verify` (no sio2jail).

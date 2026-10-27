@@ -57,7 +57,7 @@ skills/sinol-package/
   workflows/                   new-package, new-contest, review, modernize
   references/                  package format, task types, generator, quality, statement, sinol-make, contest repo
   references/sinol-gen/        copy of sinol-gen's docs and examples        } bin/sync-assets.sh
-  scripts/contest.py           copy of contest-template's tools/contest.py  } from ../contest-template
+  scripts/contest.py           copy of contest-template's contest.py        } from ../contest-template
   assets/contest-template/     copy of contest-template                     } and ../sinol-gen
   assets/VERSIONS              which versions were copied
 ```

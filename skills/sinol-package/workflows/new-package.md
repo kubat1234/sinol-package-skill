@@ -2,7 +2,7 @@
 
 ## 0. Orient (read-only)
 
-- Find the contest root (`_templates/`, `tools/contest.py`). If the
+- Find the contest root (`_templates/`, `contest.py`). If the
   repository is not from contest-template, ask whether to create the package
   there anyway (with `-t <skill>/assets/contest-template/_templates <type>`) or
   in a new contest repo.
@@ -104,7 +104,7 @@ worst time, and slow solutions must be clearly over it). Then:
 ```sh
 sinol-make run --apply-suggestions   # record expected scores
 sinol-make verify
-python3 ../tools/contest.py lint <id>
+python3 ../contest.py lint <id>
 ```
 
 ## 5. Report

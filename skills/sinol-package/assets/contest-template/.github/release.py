@@ -3,7 +3,7 @@
 
 Run by .github/workflows/release.yml on every push. For each package changed
 since the last release it runs `sinol-make export --export-ocen` (through
-tools/contest.py) and uploads
+contest.py) and uploads
 
     abc.pdf  statement        abc.tgz  package for sio2
     abc_ocen.zip  ocen tests  abc_dlazaw.zip  abc/dlazaw/ (instead of abc_ocen.zip)
@@ -26,7 +26,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT / "tools"))
+sys.path.insert(0, str(ROOT))
 from contest import attachments, export_package  # noqa: E402
 BUILD = ROOT / "_build"
 TAG = "tasks"

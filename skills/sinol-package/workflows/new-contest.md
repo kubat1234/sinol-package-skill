@@ -4,7 +4,7 @@
 
 The normal way: on GitHub **Use this template** on the contest-template
 repository (the first push fills the contest name into the templates), clone,
-then `python3 tools/contest.py init --id <id> --name "<name>"` (commit hook,
+then `python3 contest.py init --id <id> --name "<name>"` (commit hook,
 name with diacritics). Default limits are in `_templates/*/config.yml`. Details,
 the release and `update`: references/contest-repo.md.
 If the user has no GitHub template at hand, create it locally from the copy
@@ -12,7 +12,7 @@ bundled with this skill:
 
 ```sh
 cp -r <skill>/assets/contest-template <dir> && cd <dir> && git init
-python3 tools/contest.py init --id 10grodek27 --name "10Gródek27"
+python3 contest.py init --id 10grodek27 --name "10Gródek27"
 ```
 
 (`<skill>` is the directory containing this SKILL.md.) Don't commit or push
@@ -49,4 +49,4 @@ abc  Ciąg          std   easy        sum of a range after updates           2
 - When agents finish, **review every package yourself** (workflows/review.md,
   quick version: lint, run table, generator coverage, inwer strictness) before
   reporting. Don't relay an agent's "done" unchecked.
-- Finish with `python3 tools/contest.py lint`, and a summary per package.
+- Finish with `python3 contest.py lint`, and a summary per package.

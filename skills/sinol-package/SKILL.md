@@ -7,7 +7,7 @@ description: Create, review and modernize SIO2 / OIOIOI task packages (sinol for
 
 Packages live in a **contest repository** made from contest-template: one
 directory per 3-letter task id, `_templates/` (package skeletons),
-`tools/contest.py`. Packages are built and checked with **sinol-make**; there
+`contest.py`. Packages are built and checked with **sinol-make**; there
 are no Makefiles. Tests are written with **sinol-gen** (`prog/gen.h`): the
 ingen produces every test, including the statement examples, so nothing in
 `in/` / `out/` is committed.
@@ -50,9 +50,10 @@ Reference material — read the file when the task touches its topic:
    subtask table, `\RAM`, the examples — and leave the story as `TODO`.
 3. **Use the repository's own files first.** `sinol-make init <id> -t
    _templates <type>` creates a package; `sinol-make gen|inwer|run|verify|doc|export`
-   work inside it; `python3 tools/contest.py lint|export-all|update` in the
-   contest root. Only when the repository has no `_templates/` or
-   `tools/contest.py` (a foreign or old repo) use the bundled copies:
+   work inside it; `python3 contest.py lint|export-all|update|logo` in the
+   contest root (up to contest-template v1.0.3 it was `tools/contest.py`;
+   `update tools` moves it). Only when the repository has no `_templates/` or
+   `contest.py` (a foreign or old repo) use the bundled copies:
    `-t <skill>/assets/contest-template/_templates <type>` and
    [scripts/contest.py](scripts/contest.py) `--root <repo>`. If the package's
    `gen.h` is newer or older than the bundled docs, trust the package's file
