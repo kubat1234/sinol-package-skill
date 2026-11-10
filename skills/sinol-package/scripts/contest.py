@@ -341,6 +341,7 @@ def lint_statement(r, tex, cfg, tid):
     m = re.search(r"\\id\{(\w+)\}", tex)
     if m and m.group(1) != tid:
         r.error(f"statement \\id{{{m.group(1)}}} differs from package id")
+    lint_date(r, tex)
     ram = re.search(r"\\RAM\{(\d+)\}", tex)
     if ram and "memory_limit" in cfg and int(ram.group(1)) != cfg["memory_limit"] // 1024:
         r.warn(f"statement \\RAM{{{ram.group(1)}}} MB but memory_limit is {cfg['memory_limit']} KiB "
@@ -362,6 +363,21 @@ def lint_statement(r, tex, cfg, tid):
         real = limits.get(int(g), cfg.get("time_limit", 0)) / 1000
         if abs(stated - real) > 1e-9:
             r.error(f"statement says {stated:g} s for group {g}, config.yml has {real:g} s")
+
+
+def lint_date(r, tex):
+    """\\date{YYYY-MM-DD}: ISO format and a real date; TODO is reported elsewhere."""
+    import datetime
+    m = re.search(r"\\date\{([^}]*)\}", tex)
+    if not m or m.group(1).strip() == "TODO":
+        return
+    v = m.group(1).strip()
+    try:
+        if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", v):
+            raise ValueError
+        datetime.date.fromisoformat(v)
+    except ValueError:
+        r.error(f"statement \\date{{{v}}} is not an ISO date (YYYY-MM-DD, e.g. 2026-11-09)")
 
 
 def has_cycle(deps):
@@ -481,11 +497,12 @@ def latest_tag(repo):
         return None
 
 
-def fetch(repo, ref, local):
-    """(directory with the files of repo at ref, description). local = a checkout to use instead."""
+def fetch(repo, ref, local, tagged=True):
+    """(directory with the files of repo at ref, description). local = a checkout to use instead.
+    No ref: the latest tag if tagged, else (and when there are no tags) main."""
     if local:
         return Path(local).resolve(), str(local)
-    ref = ref or latest_tag(repo) or "main"
+    ref = ref or (latest_tag(repo) if tagged else None) or "main"
     url = f"https://codeload.github.com/{repo}/tar.gz/{ref}"
     try:
         with urllib.request.urlopen(url, timeout=120) as f:
@@ -647,7 +664,7 @@ def update_templates(src, ids, dry):
 def cmd_update(args):
     what = args.what
     if what in ("tools", "templates", "all"):
-        src, desc = fetch(TEMPLATE_REPO, args.ref if what != "all" else None, args.template_from)
+        src, desc = fetch(TEMPLATE_REPO, args.ref if what != "all" else None, args.template_from, tagged=False)
         print(f"from {desc}")
         if what in ("tools", "all"):
             update_tools(src, args.dry_run)
@@ -703,10 +720,10 @@ def main():
                                    "_templates/ (keeps the contest name and logo, removes what contest-template no longer has; "
                                    "gen.h only via `gen`) and the shared files "
                                    "(oi.h, sinol.cls, ...) of the given packages. all: tools + templates + gen, "
-                                   "no packages. Default version: the latest tag.")
+                                   "no packages. Default version: main of contest-template, the latest tag of sinol-gen.")
     p.add_argument("what", choices=["gen", "tools", "templates", "all"])
     p.add_argument("ids", nargs="*", help="packages to update too, or `all`")
-    p.add_argument("--ref", help="tag or branch instead of the latest tag")
+    p.add_argument("--ref", help="tag or branch instead of the default (main / latest tag)")
     p.add_argument("--gen-from", metavar="DIR", help="a local sinol-gen checkout instead of GitHub")
     p.add_argument("--template-from", metavar="DIR", help="a local contest-template checkout instead of GitHub")
     p.add_argument("--dry-run", action="store_true", help="only show what would change")

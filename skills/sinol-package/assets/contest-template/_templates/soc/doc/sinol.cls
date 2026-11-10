@@ -1009,6 +1009,7 @@ $^\thesinolCommentNumber$%
   \closeout\inffile
   \closeout\errfile
   \label{koniec}%
+  \clearpage  % ostatnia strona jeszcze w grupie tasktext, z jej stopką
 }
 
 % Odstepy w itemize

@@ -24,6 +24,8 @@
 *.fdb_latexmk
 *.synctex.gz
 *.toc
+*.err
+*.inf
 
 # Binaries compiled by hand inside prog/
 /*/prog/*
@@ -37,3 +39,4 @@
 !/*/prog/*.sh
 
 __pycache__/
+.venv/

@@ -23,7 +23,7 @@ jobs:
         run: |
           sudo apt-get update -q
           sudo apt-get install -yq --no-install-recommends texlive-latex-base texlive-latex-recommended \
-            texlive-lang-polish texlive-fonts-recommended texlive-plain-generic lmodern
+            texlive-lang-polish texlive-fonts-recommended texlive-plain-generic texlive-pictures lmodern
           pipx install sinol-make
 
       - name: Build and publish
