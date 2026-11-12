@@ -13,6 +13,7 @@ Use when finishing a package and when reviewing one.
 - [ ] Medium/hard: an independent second correct solution agreeing with the model; stress-tested against a brute force on small inputs.
 - [ ] Slow solutions for each lower complexity class mentioned in the subtasks; each passes exactly the intended groups.
 - [ ] Wrong solutions for plausible mistakes (overflow, greedy, missing edge case, wrong recursion, heuristics); each fails where its header comment says.
+- [ ] The attack rounds the author asked for are done; holes left open are listed in the report (attack-rounds.md).
 - [ ] No group passed by a trivial/wrong approach (e.g. printing 0, a constant, the brute force on "big" groups).
 - [ ] `sinol_expected_scores` recorded and `verify` passes.
 

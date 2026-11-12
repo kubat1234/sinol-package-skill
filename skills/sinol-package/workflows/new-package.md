@@ -34,12 +34,16 @@ solutions: abc.cpp O(n log n) · abc2.cpp independent O(n log n) (subagent)
            abcb1.cpp greedy by value → 0 · abcb2.cpp int overflow → fails 4
 tests: per group min/max/random/special (sorted, all equal, ...), anti-greedy
 statement: not by me (only the subtask table) — or should I write it?
+attack rounds: how many? (hard task: 2–4 recommended; easy: usually 0)
+after the rounds keep: ~7 tests per subtask, ~15 solutions? (or other numbers)
 editorial: doc/abcopr.tex, after verify
 dlazaw (library task): sample library as a terminal dialog or a simple test reader?
 ```
 
 Offer, don't impose: second independent model, more wrong solutions,
 statement or translation. The editorial is the default; the user can opt out.
+**Always ask how many attack rounds to run** (references/attack-rounds.md),
+whatever the difficulty. For a hard task mark 2–4 as recommended.
 
 ## 3. Build
 
@@ -84,8 +88,10 @@ statement or translation. The editorial is the default; the user can opt out.
    `dlazaw/`, the files for contestants (package-format.md, dlazaw). With a
    test-reader sample library, ask the author to review `dlazaw/` before any
    commit or push (task-types.md).
-9. **Wrong and slow solutions** — each targets one specific mistake, with a
-   comment at the top saying which groups it must fail and why.
+9. **Wrong and slow solutions**: spawn a subagent to write them
+   (references/attack-rounds.md). Each one targets one specific mistake,
+   correctness heuristic or slow approach. Each has a comment at the top
+   saying which groups it must fail and why.
 10. Statement: only if asked; otherwise keep the skeleton, fill the subtask table
     (points, conditions, time) and `\RAM`, leave the story as `TODO`.
 
@@ -107,6 +113,10 @@ Look at the table, not only the summary:
 - each wrong solution: fails the groups it should; if it passes a group it
   should fail, add a test (don't weaken the solution);
 - no group where everything passes trivially (group too weak).
+
+Then run the attack rounds the author asked for (references/attack-rounds.md)
+and prune tests and solutions to the numbers the author gave. If the author
+hasn't answered yet, keep asking until they do.
 
 Set the time limit from the model's time (with `time`: roughly 3–5× the model's
 worst time, and slow solutions must be clearly over it). Then:

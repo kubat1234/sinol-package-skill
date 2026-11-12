@@ -33,6 +33,7 @@ Reference material — read the file when the task touches its topic:
 | [references/task-types.md](references/task-types.md) | checker, library or interactor protocols |
 | [references/statement.md](references/statement.md) | the statement skeleton, subtask table, translations |
 | [references/editorial.md](references/editorial.md) | the editorial `doc/<id>opr.tex`: when, structure, checks, skeleton |
+| [references/attack-rounds.md](references/attack-rounds.md) | writing wrong / slow solutions, attack rounds (a subagent breaks the tests, you fix them), pruning tests |
 | [references/quality.md](references/quality.md) | before calling a package finished, and in reviews |
 | [references/sinol-make.md](references/sinol-make.md) | commands, the time tool, pitfalls |
 | [references/contest-repo.md](references/contest-repo.md) | `contest.py`, updates of gen.h / tools, the release, commit conventions |
@@ -43,7 +44,8 @@ Reference material — read the file when the task touches its topic:
    a package. Before creating or changing package content, say in a few lines
    what you will make — type, groups with limits and points, solutions (e.g.
    "model + independent second model + slow O(n²) + 3 wrong: overflow, greedy,
-   off-by-one"), the test plan, checker / interactor — and wait for their OK.
+   off-by-one"), the test plan, checker / interactor, the number of attack
+   rounds — and wait for their OK.
    Offer extras (a second independent model, more wrong solutions, a
    translation) instead of adding them silently.
 2. **The statement is the user's.** They usually write the story themselves
@@ -85,6 +87,11 @@ Reference material — read the file when the task touches its topic:
   see new-package step 3), a throwaway stress test in the scratchpad (never
   committed), wrong solutions for every plausible mistake or heuristic, and
   tests aimed at each of them.
+- **Wrong and slow solutions** (correctness and time heuristics included) are
+  written by a subagent at every difficulty.
+- **Attack rounds**: ask how many at every difficulty; on a hard task
+  recommend 2–4. See
+  [references/attack-rounds.md](references/attack-rounds.md).
 
 The user picks the main model; Opus suits hard tasks, reviews and
 interactors. For subagents pass `model: "sonnet"` on easy, mechanical work and
